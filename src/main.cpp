@@ -9,6 +9,7 @@ bool touched1 = false;
 bool touched2 = false;
 int lastState = HIGH;     // the previous state from the input pin
 int currentState;
+bool LightUp = true;
 
 void setup(){
   Serial.begin(115200);
@@ -17,7 +18,7 @@ void setup(){
   pinMode(PIN_LED, OUTPUT);
   digitalWrite(PIN_LED, LOW);
   {
-    Serial.println("Setiing up trigger level");
+    Serial.println("Setiing trigger level");
     int min = 100;                        //max value that touch can output
     for (int i = 0; i < 30; i++) {        //this cycle seek for the lowes value
       value = touchRead(T0);              
@@ -62,7 +63,31 @@ void loop(){
   }
   if (touched1 == true && touched2 == false)  //Do action on touch
   {
-    digitalWrite(PIN_LED, !digitalRead(PIN_LED));
+    LightUp = !LightUp;
+    if (LightUp == false) {
+      for(int dutyCycle = 0; dutyCycle <= 80; dutyCycle++){   
+        // changing the LED brightness with PWM
+        analogWrite(PIN_LED, dutyCycle);
+        delay(3);
+      }
+      for(int dutyCycle = 80; dutyCycle <= 255; dutyCycle++){   
+        // changing the LED brightness with PWM
+        analogWrite(PIN_LED, dutyCycle);
+        delay(2);
+      }
+    }
+    else if (LightUp == true) {
+      for(int dutyCycle = 255; dutyCycle >= 80; dutyCycle--){
+        // changing the LED brightness with PWM
+        analogWrite(PIN_LED, dutyCycle);
+        delay(2);
+      }
+      for(int dutyCycle = 80; dutyCycle >= 0; dutyCycle--){
+        // changing the LED brightness with PWM
+        analogWrite(PIN_LED, dutyCycle);
+        delay(3);
+      }
+    }
   }
 
   lastState = currentState;
