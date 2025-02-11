@@ -1,14 +1,16 @@
 #include <Arduino.h>
 #include "pab.h"
 
-//class declaration
-
 #define PIN_INPUT     T0    //GPIO used as input signal - must chose between touch pin of the board (EX: T0, T1, etc..)
 
-int value = 0;
 Trigger trigger (PIN_INPUT);
-bool touched1 = false;
-bool touched2 = false;
+int value = 0;
+bool KeptTouch = false;
+
+unsigned long StartMillis1;
+const int Period1 = 100;
+unsigned long StartMillis2;
+const int Period2 = 5000;
 
 void setup(){
   Serial.begin(115200);
@@ -21,24 +23,38 @@ void setup(){
 }
 
 void loop(){
- 
-  value = touchRead(T0);
-  trigger.update(value);
-  Serial.println(value);
-  trigger.debug();
 
-  //The properly touch button and what to do when touched
-  /*if (value < trigger) {                  //check if being touched 
-    touched1 = true;
-  } else {
-    touched1 = false;
+  if (millis() < StartMillis1 || millis() < StartMillis2){    //protection against Millis() value reset
+    StartMillis1 = 0;
+    StartMillis2 = 0;
   }
-  if (touched1 == true && touched2 == false)  //Do action on touch
-  {
-    
-  //--------------actions to do-------------------
 
+  if (millis()- StartMillis1 > Period1) {                     //Timer to update touch sensor every "Period1" millisec
+    value = touchRead(T0);
+    trigger.update(value);
+    //Serial.println(value);            //debug
+    //trigger.debug();                  //debug
+    StartMillis1 = millis();
   }
-  touched2 = touched1;*/
-  delay(1000);
+  
+  if (trigger.touch () == true && KeptTouch == true) {        //condition to do action if kept pressed for more than "Period1"
+    if (millis()- StartMillis2 > Period2) {                   //timer to update trigger reset after being touch for more than "Period2" millisec
+      trigger.reset();
+      StartMillis2 = millis();
+      Serial.printf("Trigger reset!");  //debug
+    }
+  }
+
+  if (trigger.touch () == true && KeptTouch == false) {       //condiotion to do action on press (1 time after pressed)
+    StartMillis2 = millis();
+    KeptTouch = true;
+    Serial.printf("Touched!!!");        //debug
+
+    //===========  Put Here the list of action to do on press  ============//
+  }
+
+  if (trigger.touch () == false && KeptTouch == true) {       //condition to do actions on release
+    Serial.printf("Released!!!");       //debug
+    KeptTouch = false;
+  }
 }

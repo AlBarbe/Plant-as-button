@@ -17,6 +17,13 @@ class Trigger {
             trig = round(FindTrig(readings, mean));
         }
 
+        void reset () {
+            for (int i = 0; i < 10; i++)
+                readings[i] = touchRead(PIN);
+            mean = FindMean(readings);
+            trig = round(FindTrig(readings, mean));
+        }
+
         void debug () {
             Serial.printf("Trigger: %d - Mean: %f - Array: [ ", trig, mean);
             for (int i = 0; i < 10; i++) Serial.printf("%d ", readings[i]);
