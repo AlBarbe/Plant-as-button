@@ -3,23 +3,21 @@
 
 #define PIN_INPUT     T0    //GPIO used as input signal - must chose between touch pin of the board (EX: T0, T1, etc..)
 
-Trigger trigger (PIN_INPUT);
-int value = 0;
-bool KeptTouch = false;
+Trigger trigger (PIN_INPUT);      //class meant to simplify recursive action, and clean main
+int value = 0;                    //last value measured
+bool KeptTouch = false;           //bool used to track hold touch
 
-unsigned long StartMillis1;
+unsigned long StartMillis1;       //first timer -- sampling speed
 const int Period1 = 100;
-unsigned long StartMillis2;
+unsigned long StartMillis2;       //second timer -- how many millis before adapting trigger level
 const int Period2 = 5000;
 
 void setup(){
   Serial.begin(115200);
-  delay (2000);
-
   trigger.initialize();
-  Serial.printf("Initialized as follow:");
-  trigger.debug();
-  Serial.printf("\n");
+  Serial.printf("Initialized as follow:");   //debug
+  trigger.debug();                           //debug
+  Serial.printf("\n");                       //debug
 }
 
 void loop(){
