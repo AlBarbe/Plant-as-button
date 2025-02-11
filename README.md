@@ -1,7 +1,7 @@
 <!-- HEADER -->
 # Plant as Button 🌱
 
-Wouldn't be cool to use a plant a touch sensor? 
+Wouldn't be cool to use as a plant a touch sensor? 
 Here's something you may like...
 
 <!-- TABLE OF CONTENTS -->
@@ -18,7 +18,7 @@ Here's something you may like...
 <!-- INTRODUCTION -->
 ## Introduction
 
-This little code was created to be used on a small microcontroller, is meant to be taken as a starting point in different other broject.  
+This little code was created to be used on a small microcontroller, and meant to be taken as a starting point in different other broject.  
 The Idea was to use only the basic library (arduino.h), without implementin external one.  
 In my case is tested on a ESP32 (nodemcu-32s), and coded via VS code and Platformio.
 
